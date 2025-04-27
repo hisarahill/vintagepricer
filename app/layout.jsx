@@ -4,7 +4,7 @@ export default function RootLayout({ children }) {
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-poppins bg-[#FDF6EC] min-h-screen">{children}</body>
+      <body className="bg-[#FDF6EC] font-poppins min-h-screen">{children}</body>
     </html>
   );
 }
