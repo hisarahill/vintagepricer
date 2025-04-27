@@ -4,14 +4,21 @@ export async function POST(req) {
   const { name, category, materials, condition, dimensions } = await req.json();
 
   const prompt = `
-You are a vintage resale pricing expert. Based on the following item details, estimate a fair Facebook Marketplace listing price for local sale in USD. Then write a short Facebook Marketplace listing including a catchy title, SEO-optimized description, and useful search keywords.
+You are a vintage resale pricing and marketing expert. Based on the following item details, do the following:
+
+1. Suggest the most accurate Facebook Marketplace Category for this item. Choose from the official Facebook Marketplace categories.
+2. Estimate a fair Facebook Marketplace listing price for local sale in USD.
+3. Write a short, SEO-optimized Facebook Marketplace listing including:
+   - A catchy title
+   - A detailed description
+   - Useful search keywords
 
 Item Details:
-- Name: ${name}
-- Category: ${category}
-- Materials: ${materials}
-- Condition: ${condition}
-- Dimensions: ${dimensions}
+- Name: [name]
+- Materials: [materials]
+- Condition: [condition]
+- Dimensions: [dimensions]
+
 `;
 
   try {
