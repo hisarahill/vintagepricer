@@ -5,7 +5,6 @@ import { useState } from 'react';
 export default function Home() {
   const [formData, setFormData] = useState({
     name: '',
-    category: '',
     materials: '',
     condition: '',
     dimensions: '',
@@ -41,14 +40,6 @@ export default function Home() {
           name="name"
           placeholder="Item Name"
           value={formData.name}
-          onChange={handleChange}
-          required
-          className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
-        />
-        <input
-          name="category"
-          placeholder="Category"
-          value={formData.category}
           onChange={handleChange}
           required
           className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
