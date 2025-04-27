@@ -33,7 +33,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-4">
+    <main className="flex flex-col items-center justify-center min-h-screen p-6 bg-[#FDF6EC] font-poppins">
       <h1 className="text-3xl mb-6">Vintage Pricing Assistant</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
         <input name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
