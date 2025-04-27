@@ -84,9 +84,12 @@ export default function Home() {
         </button>
       </form>
 
-     {result && (
-  <div className="mt-10 p-8 bg-white rounded-xl shadow-lg max-w-md w-full">
-    <h2 className="text-2xl font-semibold mb-4 text-center text-[#5E4B3C]">Generated Listing</h2>
-    <pre className="whitespace-pre-wrap text-gray-700">{result}</pre>
-  </div>
-)}
+      {result && (
+        <div className="mt-10 p-8 bg-white rounded-xl shadow-lg max-w-md w-full">
+          <h2 className="text-2xl font-semibold mb-4 text-center text-[#5E4B3C]">Generated Listing</h2>
+          <pre className="whitespace-pre-wrap text-gray-700">{result}</pre>
+        </div>
+      )}
+    </main>
+  );
+}
