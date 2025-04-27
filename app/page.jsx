@@ -36,16 +36,16 @@ export default function Home() {
     <main className="flex flex-col items-center justify-center min-h-screen p-4">
       <h1 className="text-3xl mb-6">Vintage Pricing Assistant</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
-        <input name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required className="border p-2" />
-        <input name="category" placeholder="Category" value={formData.category} onChange={handleChange} required className="border p-2" />
-        <input name="materials" placeholder="Materials" value={formData.materials} onChange={handleChange} className="border p-2" />
-        <input name="condition" placeholder="Condition" value={formData.condition} onChange={handleChange} required className="border p-2" />
-        <input name="dimensions" placeholder="Dimensions" value={formData.dimensions} onChange={handleChange} className="border p-2" />
-        <button type="submit" className="bg-black text-white p-2">{loading ? 'Generating...' : 'Generate Listing'}</button>
+        <input name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <input name="category" placeholder="Category" value={formData.category} onChange={handleChange} required className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <input name="materials" placeholder="Materials" value={formData.materials} onChange={handleChange} className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <input name="condition" placeholder="Condition" value={formData.condition} onChange={handleChange} required className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <input name="dimensions" placeholder="Dimensions" value={formData.dimensions} onChange={handleChange} className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition">{loading ? 'Generating...' : 'Generate Listing'}</button>
       </form>
 
       {result && (
-        <div className="mt-8 p-4 border w-full max-w-md">
+        <div className="mt-8 p-6 border rounded-lg shadow-md bg-white w-full max-w-md">
           <h2 className="text-xl mb-2">AI Generated Output:</h2>
           <pre className="whitespace-pre-wrap">{result}</pre>
         </div>
