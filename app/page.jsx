@@ -74,7 +74,7 @@ export default function Home() {
         <img
           src="/header.png"
           alt="Vintage Reseller Pricing Tool"
-          className="h-32 object-contain"
+          className="h-32 object-fill"
         />
         {/* Left bunny */}
         <img
