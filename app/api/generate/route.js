@@ -5,7 +5,10 @@ const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY;
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
 
- if (similarLink) {
+let scrapedTitle = '';
+let scrapedPrice = '';
+
+if (similarLink) {
   try {
     console.log('Trying to scrape:', similarLink);
 
@@ -14,16 +17,14 @@ export async function POST(req) {
 
     console.log('Scraped HTML length:', html.length);
 
-    // Try to find title
+    // Try to find title first
     const titleMatch = html.match(/<meta property="og:title" content="(.*?)"/i) || html.match(/<title>(.*?)<\/title>/i);
     if (titleMatch) {
       scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
     }
 
-    // First, basic price match (like before)
+    // Try to find price
     const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
-
-    // If no price found, try smarter method: look for "price":41.63 type JSON inside scripts
     if (priceMatch) {
       scrapedPrice = priceMatch[1];
     } else {
@@ -35,6 +36,12 @@ export async function POST(req) {
 
     console.log('Scraped Title:', scrapedTitle);
     console.log('Scraped Price:', scrapedPrice);
+
+  } catch (error) {
+    console.error('Scraping failed:', error);
+  }
+}
+
 
   } catch (error) {
     console.error('Scraping failed:', error);
