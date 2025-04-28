@@ -72,16 +72,18 @@ export default function Home() {
         <div className="absolute inset-0 flex items-center justify-center">
           <img src="/header.png" alt="Vintage Reseller Pricing Tool" className="h-32 object-contain" />
         </div>
-        <img
-          src="/bunnyleft.png"
-          alt="Left Bunny"
-          className="absolute left-2 top-1 h-40 w-auto"
-        />
-        <img
-          src="/bunnyright.png"
-          alt="Right Bunny"
-          className="absolute right-2 top-1 h-40 w-auto"
-        />
+       <img
+  src="/bunnyleft.png"
+  alt="Left Bunny"
+  className="h-28 md:h-40 w-auto"
+/>
+
+<img
+  src="/bunnyright.png"
+  alt="Right Bunny"
+  className="h-28 md:h-40 w-auto"
+/>
+
       </div>
 
       {/* Form */}
@@ -107,7 +109,6 @@ export default function Home() {
             placeholder="Condition"
             value={formData.condition}
             onChange={handleChange}
-            required
             className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
           />
           <input
@@ -119,7 +120,7 @@ export default function Home() {
           />
           <input
             name="similarLink"
-            placeholder="Similar Item Link (optional)"
+            placeholder="Etsy Link"
             value={formData.similarLink}
             onChange={handleChange}
             className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
