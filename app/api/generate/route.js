@@ -50,11 +50,6 @@ if (similarLink) {
 }
 
 
-  } catch (error) {
-    console.error('Scraping failed:', error);
-  }
-}
-
   const prompt = `
 You are helping create a vintage item listing.
 
