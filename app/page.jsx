@@ -66,7 +66,7 @@ export default function Home() {
       <header className="relative w-full h-48">
   {/* Background pattern */}
   <img
-    src="/headbackground.png"
+    src="/headerbackground.png"
     alt="Background Pattern"
     className="absolute inset-0 w-full h-full object-cover"
   />
