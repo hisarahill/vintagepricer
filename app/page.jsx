@@ -9,15 +9,15 @@ export default function Home() {
     condition: '',
     dimensions: '',
   });
-  const [result, setResult] = useState('');
+
+  const [price, setPrice] = useState('');
+  const [title, setTitle] = useState('');
+  const [keywords, setKeywords] = useState('');
+  const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleResultChange = (e) => {
-    setResult(e.target.value);
   };
 
   const handleSubmit = async (e) => {
@@ -31,13 +31,32 @@ export default function Home() {
     });
 
     const data = await response.json();
-    setResult(data.result);
+
+    // Smartly split the AI response based on labels
+    const sections = {
+      Price: '',
+      Title: '',
+      Keywords: '',
+      Description: '',
+    };
+
+    data.result.split('\n').forEach((line) => {
+      if (line.startsWith('Price:')) sections.Price = line.replace('Price:', '').trim();
+      else if (line.startsWith('Title:')) sections.Title = line.replace('Title:', '').trim();
+      else if (line.startsWith('Keywords:')) sections.Keywords = line.replace('Keywords:', '').trim();
+      else if (line.startsWith('Description:')) sections.Description = line.replace('Description:', '').trim();
+    });
+
+    setPrice(sections.Price);
+    setTitle(sections.Title);
+    setKeywords(sections.Keywords);
+    setDescription(sections.Description);
     setLoading(false);
   };
 
-  const handleCopy = async () => {
+  const handleCopy = async (text) => {
     if (navigator.clipboard) {
-      await navigator.clipboard.writeText(result);
+      await navigator.clipboard.writeText(text);
       alert('Copied to clipboard!');
     }
   };
@@ -88,21 +107,88 @@ export default function Home() {
         </form>
 
         {/* Result Section */}
-        {result && (
-          <div className="flex flex-col w-full md:w-1/2 bg-white p-8 rounded-xl shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4 text-center text-[#5E4B3C]">Generated Listing</h2>
-            <textarea
-              value={result}
-              onChange={handleResultChange}
-              rows={16}
-              className="border border-gray-300 rounded-md p-4 bg-[#f9f5f0] text-gray-700 w-full resize-none focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
-            />
-            <button
-              onClick={handleCopy}
-              className="mt-4 bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold py-2 px-4 rounded-md transition duration-300"
-            >
-              Copy to Clipboard
-            </button>
+        {(price || title || keywords || description) && (
+          <div className="flex flex-col w-full md:w-1/2 bg-white p-8 rounded-xl shadow-lg gap-6">
+            <h2 className="text-2xl font-semibold text-center text-[#5E4B3C] mb-2">Generated Listing</h2>
+
+            {/* Price */}
+            <div>
+              <label className="block text-sm font-bold mb-2">Price</label>
+              <div className="flex gap-2">
+                <input
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="flex-1 border rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
+                />
+                <button
+                  onClick={() => handleCopy(price)}
+                  type="button"
+                  className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold px-4 py-2 rounded-md transition"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            {/* Title */}
+            <div>
+              <label className="block text-sm font-bold mb-2">Title</label>
+              <div className="flex gap-2">
+                <input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="flex-1 border rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
+                />
+                <button
+                  onClick={() => handleCopy(title)}
+                  type="button"
+                  className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold px-4 py-2 rounded-md transition"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            {/* Keywords */}
+            <div>
+              <label className="block text-sm font-bold mb-2">Keywords</label>
+              <div className="flex gap-2">
+                <textarea
+                  rows={2}
+                  value={keywords}
+                  onChange={(e) => setKeywords(e.target.value)}
+                  className="flex-1 border rounded-md p-3 bg-[#f9f5f0] resize-none focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
+                />
+                <button
+                  onClick={() => handleCopy(keywords)}
+                  type="button"
+                  className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold px-4 py-2 rounded-md transition"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div>
+              <label className="block text-sm font-bold mb-2">Description</label>
+              <div className="flex gap-2">
+                <textarea
+                  rows={4}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="flex-1 border rounded-md p-3 bg-[#f9f5f0] resize-none focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
+                />
+                <button
+                  onClick={() => handleCopy(description)}
+                  type="button"
+                  className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold px-4 py-2 rounded-md transition"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+
           </div>
         )}
       </div>
