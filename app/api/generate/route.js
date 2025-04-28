@@ -38,7 +38,7 @@ if (similarLink) {
   } catch (error) {
     console.error('Scraping failed:', error);
   }
-} // 
+}
 
 
     console.log('Scraped Title:', scrapedTitle);
