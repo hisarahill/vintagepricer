@@ -1,51 +1,59 @@
 import { NextResponse } from 'next/server';
 
-const SCRAPINGBEE_API_KEY = process.env.SCRAPINGBEE_API_KEY;
+const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY; // Make sure this is set in Vercel!
 
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
 
-  let scrapedHTML = '';
+  let scrapedTitle = '';
+  let scrapedPrice = '';
 
   if (similarLink) {
     try {
-      const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPINGBEE_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=false`);
-      scrapedHTML = await scraperRes.text();
+      const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`);
+      const html = await scraperRes.text();
+
+      // Basic quick parsing
+      const titleMatch = html.match(/<title>(.*?)<\/title>/i);
+      if (titleMatch) {
+        scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
+      }
+
+      const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+      if (priceMatch) {
+        scrapedPrice = priceMatch[1];
+      }
+
+      console.log('Scraped Title:', scrapedTitle);
+      console.log('Scraped Price:', scrapedPrice);
+
     } catch (error) {
-      console.error('ScrapingBee failed:', error);
+      console.error('Scraping failed:', error);
     }
   }
 
   const prompt = `
-You are a helpful assistant.
+You are helping create a vintage item listing.
 
-Here is the raw HTML of a vintage item listing page:
-
-${scrapedHTML ? scrapedHTML.substring(0, 12000) : '[No HTML provided]'}
-
-Tasks:
-- If HTML is provided, extract:
-  - Title (clean short name)
-  - Price (only the number)
-
-Output exactly like:
-
-Title: [title]
-Price: [number]
-
----
-
-Now here is extra item info:
+Item details:
 - Name: ${name}
 - Materials: ${materials}
 - Condition: ${condition}
 - Dimensions: ${dimensions}
+${scrapedTitle ? `- Reference Item Title: ${scrapedTitle}` : ''}
+${scrapedPrice ? `- Reference Item Price: $${scrapedPrice}` : ''}
 
-Generate:
-- Fair local sale Price
-- Short Title (max 65 characters)
-- 5–10 SEO Keywords
-- 2–4 sentence friendly Description
+Instructions:
+- Estimate a fair Facebook Marketplace price (USD), considering any reference price.
+- Write a short Title (max 65 characters).
+- List 5–10 SEO keywords (comma-separated).
+- Write a 2–4 sentence Description naturally using keywords.
+
+Output format:
+Price: [number]
+Title: [text]
+Keywords: [comma-separated keywords]
+Description: [text]
 `;
 
   try {
@@ -69,7 +77,7 @@ Generate:
     return NextResponse.json({ result: text });
 
   } catch (error) {
-    console.error('OpenAI API Error:', error);
+    console.error('OpenAI Error:', error);
     return NextResponse.json({ result: 'Error generating listing. Please try again.' });
   }
 }
