@@ -17,13 +17,11 @@ if (similarLink) {
 
     console.log('Scraped HTML length:', html.length);
 
-    // Try to find title first
     const titleMatch = html.match(/<meta property="og:title" content="(.*?)"/i) || html.match(/<title>(.*?)<\/title>/i);
     if (titleMatch) {
       scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
     }
 
-    // Try to find price
     const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
     if (priceMatch) {
       scrapedPrice = priceMatch[1];
@@ -33,6 +31,15 @@ if (similarLink) {
         scrapedPrice = jsonPriceMatch[1];
       }
     }
+
+    console.log('Scraped Title:', scrapedTitle);
+    console.log('Scraped Price:', scrapedPrice);
+
+  } catch (error) {
+    console.error('Scraping failed:', error);
+  }
+} // 
+
 
     console.log('Scraped Title:', scrapedTitle);
     console.log('Scraped Price:', scrapedPrice);
