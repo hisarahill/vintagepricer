@@ -1,54 +1,44 @@
 import { NextResponse } from 'next/server';
 
-const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY; 
+const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY;
 
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
 
-let scrapedTitle = '';
-let scrapedPrice = '';
+  let scrapedTitle = '';
+  let scrapedPrice = '';
 
-if (similarLink) {
-  try {
-    console.log('Trying to scrape:', similarLink);
+  if (similarLink) {
+    try {
+      console.log('Trying to scrape:', similarLink);
 
-    const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`);
-    const html = await scraperRes.text();
+      const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`);
+      const html = await scraperRes.text();
 
-    console.log('Scraped HTML length:', html.length);
+      console.log('Scraped HTML length:', html.length);
 
-    const titleMatch = html.match(/<meta property="og:title" content="(.*?)"/i) || html.match(/<title>(.*?)<\/title>/i);
-    if (titleMatch) {
-      scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
-    }
-
-    const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
-    if (priceMatch) {
-      scrapedPrice = priceMatch[1];
-    } else {
-      const jsonPriceMatch = html.match(/"price":\s*([0-9]+(?:\.[0-9]{1,2})?)/);
-      if (jsonPriceMatch) {
-        scrapedPrice = jsonPriceMatch[1];
+      const titleMatch = html.match(/<meta property="og:title" content="(.*?)"/i) || html.match(/<title>(.*?)<\/title>/i);
+      if (titleMatch) {
+        scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
       }
+
+      const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+      if (priceMatch) {
+        scrapedPrice = priceMatch[1];
+      } else {
+        const jsonPriceMatch = html.match(/"price":\s*([0-9]+(?:\.[0-9]{1,2})?)/);
+        if (jsonPriceMatch) {
+          scrapedPrice = jsonPriceMatch[1];
+        }
+      }
+
+      console.log('Scraped Title:', scrapedTitle);
+      console.log('Scraped Price:', scrapedPrice);
+
+    } catch (error) {
+      console.error('Scraping failed:', error);
     }
-
-    console.log('Scraped Title:', scrapedTitle);
-    console.log('Scraped Price:', scrapedPrice);
-
-  } catch (error) {
-    console.error('Scraping failed:', error);
-  }
-}
-
-
-    console.log('Scraped Title:', scrapedTitle);
-    console.log('Scraped Price:', scrapedPrice);
-
-  } catch (error) {
-    console.error('Scraping failed:', error);
-  }
-}
-
+  } // closes the if(similarLink) safely
 
   const prompt = `
 You are helping create a vintage item listing.
