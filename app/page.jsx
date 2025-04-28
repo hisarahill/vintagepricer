@@ -8,6 +8,7 @@ export default function Home() {
     materials: '',
     condition: '',
     dimensions: '',
+    similarLink: '',
   });
 
   const [price, setPrice] = useState('');
@@ -32,7 +33,6 @@ export default function Home() {
 
     const data = await response.json();
 
-    // Smartly split the AI response based on labels
     const sections = {
       Price: '',
       Title: '',
@@ -95,6 +95,13 @@ export default function Home() {
             name="dimensions"
             placeholder="Dimensions"
             value={formData.dimensions}
+            onChange={handleChange}
+            className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
+          />
+          <input
+            name="similarLink"
+            placeholder="Similar Item Link (optional)"
+            value={formData.similarLink}
             onChange={handleChange}
             className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
           />
