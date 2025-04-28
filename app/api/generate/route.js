@@ -6,39 +6,36 @@ export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
 
   let scrapedTitle = '';
-  let scrapedPrice = '';
+let scrapedPrice = '';
 
-  if (similarLink) {
-    try {
-      console.log('Trying to scrape:', similarLink);
-      const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`);
+if (similarLink) {
+  try {
+    console.log('Trying to scrape:', similarLink);
 
-      if (!scraperRes.ok) {
-        console.error('ScrapingBee failed with status:', scraperRes.status);
-        throw new Error('ScrapingBee fetch failed.');
-      }
+    const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`);
+    const html = await scraperRes.text();
 
-      const html = await scraperRes.text();
-      console.log('Scraped HTML length:', html.length);
+    console.log('Scraped HTML length:', html.length);
 
-      const titleMatch = html.match(/"title":"(.*?)"/);
-if (titleMatch) {
-  scrapedTitle = titleMatch[1];
-}
-
-const priceMatch = html.match(/"price":"(\d+(\.\d{1,2})?)"/);
-if (priceMatch) {
-  scrapedPrice = priceMatch[1];
-}
-
-console.log('Scraped Title:', scrapedTitle);
-console.log('Scraped Price:', scrapedPrice);
-
-    } catch (error) {
-      console.error('Scraping failed:', error);
+    // Parse title
+    const metaTitleMatch = html.match(/<meta property="og:title" content="([^"]+)"\/?>/i);
+    if (metaTitleMatch) {
+      scrapedTitle = metaTitleMatch[1];
     }
-  }
 
+    // Parse price
+    const priceMatch = html.match(/"price":"(\d+(\.\d{1,2})?)"/);
+    if (priceMatch) {
+      scrapedPrice = priceMatch[1];
+    }
+
+    console.log('Scraped Title:', scrapedTitle);
+    console.log('Scraped Price:', scrapedPrice);
+
+  } catch (error) {
+    console.error('Scraping failed:', error);
+  }
+}
   const prompt = `
 You are helping create a vintage item listing.
 
