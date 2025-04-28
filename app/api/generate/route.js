@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
@@ -38,7 +39,7 @@ export async function POST(req) {
     } catch (error) {
       console.error('Scraping failed:', error);
     }
-  } // END of if (similarLink) {} safely!
+  }
 
   const prompt = `
 You are helping create a vintage item listing.
@@ -62,13 +63,13 @@ Price: [number]
 Title: [text]
 Keywords: [comma-separated keywords]
 Description: [text]
-`;
+`.trim();
 
   try {
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -78,14 +79,20 @@ Description: [text]
       }),
     });
 
-    const data = await openaiRes.json();
-    console.log('OpenAI raw response:', data);
+    if (!openaiRes.ok) {
+      const errorText = await openaiRes.text();
+      console.error('OpenAI response not OK:', errorText);
+      return NextResponse.json({ result: 'OpenAI error. Try again later.' });
+    }
 
-    const text = data.choices?.[0]?.message?.content || 'No response generated.';
+    const data = await openaiRes.json();
+    console.log('Full OpenAI Response:', JSON.stringify(data, null, 2));
+
+    const text = data.choices?.[0]?.message?.content?.trim() || 'No response generated.';
     return NextResponse.json({ result: text });
 
   } catch (error) {
-    console.error('OpenAI Error:', error);
-    return NextResponse.json({ result: 'Error generating listing. Please try again.' });
+    console.error('OpenAI Fetch Error:', error);
+    return NextResponse.json({ result: 'Error contacting OpenAI. Please try again.' });
   }
 }
