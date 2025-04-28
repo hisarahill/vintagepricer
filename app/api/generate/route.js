@@ -10,7 +10,7 @@ export async function POST(req) {
 
   if (similarLink && process.env.VERCEL_ENV !== 'development') { // 👈 prevent scraping during build
     try {
-      const scraperRes = await fetch(`http://api.scraperapi.com?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}`);
+      const scraperRes = await fetch(`http://api.scraperapi.com?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render=true`);
       const html = await scraperRes.text();
 
       const titleMatch = html.match(/<title>(.*?)<\/title>/i);
