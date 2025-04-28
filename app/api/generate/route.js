@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY; // <-- make sure this is set in Vercel!
+const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY;
 
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
@@ -8,15 +8,14 @@ export async function POST(req) {
   let scrapedTitle = '';
   let scrapedPrice = '';
 
-  if (similarLink) {
+  if (similarLink && process.env.VERCEL_ENV !== 'development') { // 👈 prevent scraping during build
     try {
       const scraperRes = await fetch(`http://api.scraperapi.com?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}`);
       const html = await scraperRes.text();
 
-      // Very basic scraping
       const titleMatch = html.match(/<title>(.*?)<\/title>/i);
       if (titleMatch) {
-        scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim(); // Clean up " - Etsy" from title
+        scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
       }
 
       const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
@@ -24,7 +23,6 @@ export async function POST(req) {
         scrapedPrice = priceMatch[1];
       }
 
-      // Always log after attempting scrape
       console.log('Scraped Title:', scrapedTitle);
       console.log('Scraped Price:', scrapedPrice);
 
@@ -33,32 +31,22 @@ export async function POST(req) {
     }
   }
 
-  // Now construct the AI prompt
   const prompt = `
-You are a Facebook Marketplace listing assistant helping users create vintage item listings.
+You are a Facebook Marketplace listing assistant.
 
-Item Details:
+Item:
 - Name: ${name}
 - Materials: ${materials}
 - Condition: ${condition}
 - Dimensions: ${dimensions}
-${scrapedTitle ? `- Reference Item Title: ${scrapedTitle}` : ''}
-${scrapedPrice ? `- Reference Item Price: $${scrapedPrice}` : ''}
+${scrapedTitle ? `- Reference Title: ${scrapedTitle}` : ''}
+${scrapedPrice ? `- Reference Price: $${scrapedPrice}` : ''}
 
-Instructions:
-- Estimate a realistic local sale price based on the item details and any reference price.
-- Output ONLY a plain number for Price (no dollar sign or extra text).
-- Write a short, SEO-optimized Title (max 65 characters).
-- List 5–10 comma-separated SEO Keywords.
-- Write a concise 2–4 sentence Description using some keywords naturally.
-
-Format your output exactly as:
-Price: [number]
+Please output:
+Price: [plain number]
 Title: [short title]
-Keywords: [keyword1, keyword2, ...]
+Keywords: [comma-separated]
 Description: [short description]
-
-Do not include any explanations.
 `;
 
   try {
@@ -69,7 +57,7 @@ Do not include any explanations.
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o', // you have access ✅
+        model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.5,
       }),
