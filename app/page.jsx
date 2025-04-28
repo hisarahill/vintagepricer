@@ -63,20 +63,52 @@ export default function Home() {
 
   return (
     <>
-      {/* Header image */}
-  <header className="w-full bg-[#f9f5f0] shadow-md sticky top-0 z-50 flex justify-center items-center">
-  <img
-    src="/header.png"
-    alt="Vintage Reseller Pricing Tool Banner"
-    className="w-full max-w-5xl px-4 py-2 rounded-xl shadow-sm hover:scale-105 hover:shadow-[0_0_20px_rgba(216,125,74,0.4)] transition-all duration-300 object-contain"
-  />
-</header>
+      {/* Sticky glowing header */}
+      <header className="w-full flex justify-center bg-[#f9f5f0] shadow-md p-4 mb-8 sticky top-0 z-50 animate-glow">
+        <img
+          src="/header.png"
+          alt="Vintage Reseller Pricing Tool Banner"
+          className="max-h-32 rounded-xl shadow-sm hover:scale-105 transition-transform duration-300 object-contain"
+        />
+      </header>
 
+      <main className="flex flex-col items-center justify-center min-h-screen p-6 pt-40 bg-[#FDF6EC] font-poppins">
+        <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl">
+          {/* Form Section */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full md:w-1/2 bg-white p-8 rounded-xl shadow-md">
+            <input name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]" />
+            <input name="materials" placeholder="Materials" value={formData.materials} onChange={handleChange} className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]" />
+            <input name="condition" placeholder="Condition" value={formData.condition} onChange={handleChange} required className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]" />
+            <input name="dimensions" placeholder="Dimensions" value={formData.dimensions} onChange={handleChange} className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]" />
+            <input name="similarLink" placeholder="Similar Item Link (optional)" value={formData.similarLink} onChange={handleChange} className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]" />
+            <button type="submit" className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold py-3 px-6 rounded-md transition duration-300">
+              {loading ? 'Generating...' : 'Generate Listing'}
+            </button>
+          </form>
 
-
-
-      {/* Main content */}
-     <main className="flex flex-col items-center justify-center min-h-screen p-6 pt-40 bg-[#FDF6EC] font-poppins">
+          {/* Result Section */}
+          {(price || title || keywords || description) && (
+            <div className="flex flex-col w-full md:w-1/2 bg-white p-8 rounded-xl shadow-lg gap-6">
+              <h2 className="text-2xl font-semibold text-center text-[#5E4B3C] mb-2">Generated Listing</h2>
+              {['Price', 'Title', 'Keywords', 'Description'].map((field) => (
+                <div key={field}>
+                  <label className="block text-sm font-bold mb-2">{field}</label>
+                  <div className="flex gap-2">
+                    {field === 'Keywords' || field === 'Description' ? (
+                      <textarea rows={field === 'Keywords' ? 2 : 4} value={eval(field.toLowerCase())} onChange={(e) => eval(`set${field}`)(e.target.value)} className="flex-1 border rounded-md p-3 bg-[#f9f5f0] resize-none focus:outline-none focus:ring-2 focus:ring-[#D87D4A]" />
+                    ) : (
+                      <input value={eval(field.toLowerCase())} onChange={(e) => eval(`set${field}`)(e.target.value)} className="flex-1 border rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]" />
+                    )}
+                    <button onClick={() => handleCopy(eval(field.toLowerCase()))} type="button" className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold px-4 py-2 rounded-md transition">
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
     </>
   );
 }
