@@ -6,25 +6,30 @@ export async function POST(req) {
 const prompt = `
 You are helping someone write a Facebook Marketplace listing for a vintage item.
 
-Given these details:
+Given these item details:
 
 - Name: ${name}
 - Materials: ${materials}
 - Condition: ${condition}
 - Dimensions: ${dimensions}
 
+${similarLink ? `They also provided a similar listing link for reference: ${similarLink}` : ''}
+
 Perform these tasks:
 
 1. Estimate a fair local sale price in USD. Output only the number (e.g., "35"). No dollar signs, no extra text.
 2. Write a short, simple Title for the listing (maximum 65 characters).
 3. Generate 5–10 high-SEO and long-tail Keywords about this item (comma-separated).
-4. Write a short Description (2–3 sentences) that is plain, factual, and friendly. 
+4. Write a short Description (2–4 sentences) that is plain, factual, and friendly. 
    - Avoid overly salesy or emotional language.
-   - Naturally incorporate some of the high-SEO keywords you generated into the sentences.
+   - Naturally incorporate some of the high-SEO keywords into the description.
 
-Output exactly four fields labeled: "Price", "Title", "Keywords", "Description".
-Do not include any explanations, extra commentary, or headings beyond those four fields.
+Use the provided similar listing link as inspiration if available, but do not copy it directly.
+
+Output exactly these fields labeled: "Price", "Title", "Keywords", "Description".
+No extra commentary.
 `;
+
 
 
 
