@@ -3,23 +3,28 @@ import { NextResponse } from 'next/server';
 export async function POST(req) {
   const { name, category, materials, condition, dimensions } = await req.json();
 
-  const prompt = `
-You are a vintage resale pricing and marketing expert. Based on the following item details, do the following:
+const prompt = `
+You are a vintage resale pricing and marketing expert.
 
-1. Suggest the most accurate Facebook Marketplace Category for this item. Choose from the official Facebook Marketplace categories.
-2. Estimate a fair Facebook Marketplace listing price for local sale in USD.
-3. Write a short, SEO-optimized Facebook Marketplace listing including:
-   - A catchy title
-   - A detailed description
-   - Useful search keywords
+Given the following item details, perform these tasks:
 
-Item Details:
-- Name: [name]
-- Materials: [materials]
-- Condition: [condition]
-- Dimensions: [dimensions]
+1. Estimate a fair local sale price in USD based on the item's type, material, condition, and dimensions.
+2. Write a complete Facebook Marketplace listing including:
+   - A descriptive Title
+   - A detailed SEO-optimized Description
+   - A list of relevant Search Keywords (formatted as a comma-separated list)
 
+Here are the item details:
+- Name: ${name}
+- Materials: ${materials}
+- Condition: ${condition}
+- Dimensions: ${dimensions}
+
+Use reasonable assumptions if needed, and fill in any missing details naturally.
+Generate a fully completed listing without asking for additional information.
 `;
+
+
 
   try {
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
