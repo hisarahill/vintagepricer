@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY; // Make sure this is set in Vercel!
+const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY; 
 
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
@@ -10,10 +10,17 @@ export async function POST(req) {
 
   if (similarLink) {
     try {
+      console.log('Trying to scrape:', similarLink);
       const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`);
-      const html = await scraperRes.text();
 
-      // Basic quick parsing
+      if (!scraperRes.ok) {
+        console.error('ScrapingBee failed with status:', scraperRes.status);
+        throw new Error('ScrapingBee fetch failed.');
+      }
+
+      const html = await scraperRes.text();
+      console.log('Scraped HTML length:', html.length);
+
       const titleMatch = html.match(/<title>(.*?)<\/title>/i);
       if (titleMatch) {
         scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
