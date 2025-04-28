@@ -136,12 +136,13 @@ export default function Home() {
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
             />
-            <button
-              type="submit"
-              className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold py-3 px-6 rounded-md transition duration-300"
-            >
-              {loading ? 'Generating...' : 'Generate Listing'}
-            </button>
+         <button
+  type="submit"
+  className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold py-3 px-6 rounded-md transition duration-300 hover:shadow-lg hover:shadow-[#d87d4a66]"
+>
+  {loading ? 'Generating...' : 'Generate Listing'}
+</button>
+
           </form>
 
           {/* Result Section */}
