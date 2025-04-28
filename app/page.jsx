@@ -75,12 +75,12 @@ export default function Home() {
         <img
           src="/bunnyleft.png"
           alt="Left Bunny"
-          className="absolute left-2 top-1 h-20 w-auto"
+          className="absolute left-2 top-1 h-30 w-auto"
         />
         <img
           src="/bunnyright.png"
           alt="Right Bunny"
-          className="absolute right-2 top-1 h-20 w-auto"
+          className="absolute right-2 top-1 h-30 w-auto"
         />
       </div>
 
