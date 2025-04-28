@@ -21,18 +21,18 @@ export async function POST(req) {
       const html = await scraperRes.text();
       console.log('Scraped HTML length:', html.length);
 
-      const titleMatch = html.match(/<title>(.*?)<\/title>/i);
-      if (titleMatch) {
-        scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
-      }
+      const titleMatch = html.match(/"title":"(.*?)"/);
+if (titleMatch) {
+  scrapedTitle = titleMatch[1];
+}
 
-      const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
-      if (priceMatch) {
-        scrapedPrice = priceMatch[1];
-      }
+const priceMatch = html.match(/"price":"(\d+(\.\d{1,2})?)"/);
+if (priceMatch) {
+  scrapedPrice = priceMatch[1];
+}
 
-      console.log('Scraped Title:', scrapedTitle);
-      console.log('Scraped Price:', scrapedPrice);
+console.log('Scraped Title:', scrapedTitle);
+console.log('Scraped Price:', scrapedPrice);
 
     } catch (error) {
       console.error('Scraping failed:', error);
