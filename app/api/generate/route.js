@@ -5,7 +5,7 @@ const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY;
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
 
-  let scrapedTitle = '';
+ let scrapedTitle = '';
 let scrapedPrice = '';
 
 if (similarLink) {
@@ -36,6 +36,7 @@ if (similarLink) {
     console.error('Scraping failed:', error);
   }
 }
+
   const prompt = `
 You are helping create a vintage item listing.
 
