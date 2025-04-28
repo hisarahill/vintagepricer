@@ -64,24 +64,30 @@ export default function Home() {
   return (
     <main className="flex flex-col items-center min-h-screen p-6 bg-[#FDF6EC] font-poppins relative overflow-hidden">
 
-      {/* Bunny + Header Section */}
-      <div className="w-full flex justify-center items-center relative mb-12 mt-8">
-        {/* Left Bunny */}
+      {/* Header Section */}
+      <div className="relative w-full h-48 bg-center bg-repeat flex items-center justify-center mb-8"
+        style={{
+          backgroundImage: "url('/headerbackground.png')",
+        }}
+      >
+        {/* Center header */}
+        <img
+          src="/header.png"
+          alt="Vintage Reseller Pricing Tool"
+          className="h-32 object-contain"
+        />
+        {/* Left bunny */}
         <img
           src="/bunnyleft.png"
           alt="Left Bunny"
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 w-24 md:w-32 animate-float"
+          className="absolute left-4 top-4 w-24 md:w-32"
         />
-        {/* Right Bunny */}
+        {/* Right bunny */}
         <img
           src="/bunnyright.png"
           alt="Right Bunny"
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 w-24 md:w-32 animate-float-reverse"
+          className="absolute right-4 top-4 w-24 md:w-32"
         />
-        {/* Header Text */}
-        <h1 className="text-3xl md:text-5xl font-bold text-[#5E4B3C] text-center drop-shadow-md animate-shimmer">
-          Vintage Reseller Pricing Tool
-        </h1>
       </div>
 
       {/* Form and Results */}
@@ -127,7 +133,7 @@ export default function Home() {
           />
           <button
             type="submit"
-            className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold py-3 px-6 rounded-md transition duration-300 hover:shadow-lg hover:shadow-[#d87d4a66]"
+            className="bg-[#D87D4A] hover:bg-[#c26c40] text-white font-semibold py-3 px-6 rounded-md transition duration-300"
           >
             {loading ? 'Generating...' : 'Generate Listing'}
           </button>
@@ -219,34 +225,6 @@ export default function Home() {
           </div>
         )}
       </div>
-
-      {/* Add floating animation */}
-      <style jsx global>{`
-        @keyframes float {
-          0% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
-          100% { transform: translateY(0); }
-        }
-        @keyframes float-reverse {
-          0% { transform: translateY(0); }
-          50% { transform: translateY(8px); }
-          100% { transform: translateY(0); }
-        }
-        @keyframes shimmer {
-          0% { filter: brightness(1) drop-shadow(0 0 0px #D87D4A); }
-          50% { filter: brightness(1.1) drop-shadow(0 0 5px #D87D4A); }
-          100% { filter: brightness(1) drop-shadow(0 0 0px #D87D4A); }
-        }
-        .animate-float {
-          animation: float 4s ease-in-out infinite;
-        }
-        .animate-float-reverse {
-          animation: float-reverse 4s ease-in-out infinite;
-        }
-        .animate-shimmer {
-          animation: shimmer 4s ease-in-out infinite;
-        }
-      `}</style>
 
     </main>
   );
