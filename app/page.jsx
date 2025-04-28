@@ -72,17 +72,18 @@ export default function Home() {
         <div className="absolute inset-0 flex items-center justify-center">
           <img src="/header.png" alt="Vintage Reseller Pricing Tool" className="h-32 object-contain" />
         </div>
-       <img
+        <img
   src="/bunnyleft.png"
   alt="Left Bunny"
-  className="h-28 md:h-40 w-auto"
+  className="absolute left-0 top-1/2 transform -translate-y-1/2 h-28 md:h-40 w-auto"
 />
 
 <img
   src="/bunnyright.png"
   alt="Right Bunny"
-  className="h-28 md:h-40 w-auto"
+  className="absolute right-0 top-1/2 transform -translate-y-1/2 h-28 md:h-40 w-auto"
 />
+
 
       </div>
 
