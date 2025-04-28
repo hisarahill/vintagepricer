@@ -64,13 +64,14 @@ export default function Home() {
   return (
     <>
       {/* Header image */}
-    <header className="w-full flex justify-center bg-[#f9f5f0] shadow-md p-4 sticky top-0 z-50">
+   <header className="w-full flex justify-center bg-[#f9f5f0] shadow-md p-4 sticky top-0 z-50">
   <img
     src="/header.png"
     alt="Vintage Reseller Pricing Tool Banner"
-    className="max-h-32 rounded-xl shadow-sm hover:scale-105 hover:shadow-[0_0_20px_rgba(216,125,74,0.4)] transition-all duration-300 object-contain"
+    className="w-[70%] max-w-4xl rounded-xl shadow-sm hover:scale-105 hover:shadow-[0_0_20px_rgba(216,125,74,0.4)] transition-all duration-300 object-contain"
   />
 </header>
+
 
 
       {/* Main content */}
