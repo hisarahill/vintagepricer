@@ -1,52 +1,64 @@
 import { NextResponse } from 'next/server';
 
-const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY;
-
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
 
-  let scrapedTitle = '';
-  let scrapedPrice = '';
+  let scrapedHTML = '';
 
-  if (similarLink && process.env.VERCEL_ENV !== 'development') { // 👈 prevent scraping during build
+  if (similarLink) {
     try {
-      const scraperRes = await fetch(`http://api.scraperapi.com?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render=true`);
-      const html = await scraperRes.text();
+      const scraperRes = await fetch(similarLink, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113 Safari/537.36',
+        }
+      });
 
-      const titleMatch = html.match(/<title>(.*?)<\/title>/i);
-      if (titleMatch) {
-        scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
-      }
-
-      const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
-      if (priceMatch) {
-        scrapedPrice = priceMatch[1];
-      }
-
-      console.log('Scraped Title:', scrapedTitle);
-      console.log('Scraped Price:', scrapedPrice);
-
+      scrapedHTML = await scraperRes.text();
     } catch (error) {
-      console.error('ScraperAPI fetch failed:', error);
+      console.error('Failed to fetch page:', error);
     }
   }
 
   const prompt = `
-You are a Facebook Marketplace listing assistant.
+You are a helpful assistant.
 
-Item:
+Here is the raw HTML of a vintage item listing page:
+
+${scrapedHTML ? scrapedHTML.substring(0, 12000) : '[No HTML provided]'}
+
+Tasks:
+- If HTML is provided, extract:
+  - Title (short and clean, no brand name junk)
+  - Price (only the number, no dollar sign, no extra text)
+
+- If NO HTML is provided, just skip.
+
+Output exactly like:
+
+Title: [title here]
+Price: [price number only]
+
+---
+
+Now, item manual details:
 - Name: ${name}
 - Materials: ${materials}
 - Condition: ${condition}
 - Dimensions: ${dimensions}
-${scrapedTitle ? `- Reference Title: ${scrapedTitle}` : ''}
-${scrapedPrice ? `- Reference Price: $${scrapedPrice}` : ''}
 
-Please output:
-Price: [plain number]
-Title: [short title]
-Keywords: [comma-separated]
-Description: [short description]
+Using all available info, generate:
+
+1. A fair local sale price (in USD).
+2. A short SEO-friendly Title (max 65 characters).
+3. 5–10 SEO Keywords (comma-separated).
+4. A friendly 2–4 sentence Description naturally using the keywords.
+
+Respond exactly like:
+
+Price: [number]
+Title: [title]
+Keywords: [comma, separated, keywords]
+Description: [friendly short paragraph]
 `;
 
   try {
