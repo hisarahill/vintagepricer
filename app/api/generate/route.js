@@ -5,10 +5,7 @@ const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY;
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
 
- let scrapedTitle = '';
-let scrapedPrice = '';
-
-if (similarLink) {
+ if (similarLink) {
   try {
     console.log('Trying to scrape:', similarLink);
 
@@ -17,16 +14,23 @@ if (similarLink) {
 
     console.log('Scraped HTML length:', html.length);
 
-    // Parse title
-    const metaTitleMatch = html.match(/<meta property="og:title" content="([^"]+)"\/?>/i);
-    if (metaTitleMatch) {
-      scrapedTitle = metaTitleMatch[1];
+    // Try to find title
+    const titleMatch = html.match(/<meta property="og:title" content="(.*?)"/i) || html.match(/<title>(.*?)<\/title>/i);
+    if (titleMatch) {
+      scrapedTitle = titleMatch[1].replace(/ - Etsy.*$/, '').trim();
     }
 
-    // Parse price
-    const priceMatch = html.match(/"price":"(\d+(\.\d{1,2})?)"/);
+    // First, basic price match (like before)
+    const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
+
+    // If no price found, try smarter method: look for "price":41.63 type JSON inside scripts
     if (priceMatch) {
       scrapedPrice = priceMatch[1];
+    } else {
+      const jsonPriceMatch = html.match(/"price":\s*([0-9]+(?:\.[0-9]{1,2})?)/);
+      if (jsonPriceMatch) {
+        scrapedPrice = jsonPriceMatch[1];
+      }
     }
 
     console.log('Scraped Title:', scrapedTitle);
