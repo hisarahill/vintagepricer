@@ -60,6 +60,13 @@ export default function Home() {
       alert('Copied to clipboard!');
     }
   };
+<header className="w-full flex justify-center bg-[#f9f5f0] shadow-md p-4 mb-8">
+  <img
+    src="/header.png"
+    alt="Vintage Reseller Pricing Tool Banner"
+    className="max-h-32 rounded-xl shadow-sm hover:scale-105 transition-transform duration-300 object-contain"
+  />
+</header>
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-6 bg-[#FDF6EC] font-poppins">
