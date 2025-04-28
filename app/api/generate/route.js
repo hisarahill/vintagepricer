@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+const SCRAPINGBEE_API_KEY = process.env.SCRAPINGBEE_API_KEY;
+
 export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
 
@@ -7,15 +9,10 @@ export async function POST(req) {
 
   if (similarLink) {
     try {
-      const scraperRes = await fetch(similarLink, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113 Safari/537.36',
-        }
-      });
-
+      const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPINGBEE_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=false`);
       scrapedHTML = await scraperRes.text();
     } catch (error) {
-      console.error('Failed to fetch page:', error);
+      console.error('ScrapingBee failed:', error);
     }
   }
 
@@ -28,37 +25,27 @@ ${scrapedHTML ? scrapedHTML.substring(0, 12000) : '[No HTML provided]'}
 
 Tasks:
 - If HTML is provided, extract:
-  - Title (short and clean, no brand name junk)
-  - Price (only the number, no dollar sign, no extra text)
-
-- If NO HTML is provided, just skip.
+  - Title (clean short name)
+  - Price (only the number)
 
 Output exactly like:
 
-Title: [title here]
-Price: [price number only]
+Title: [title]
+Price: [number]
 
 ---
 
-Now, item manual details:
+Now here is extra item info:
 - Name: ${name}
 - Materials: ${materials}
 - Condition: ${condition}
 - Dimensions: ${dimensions}
 
-Using all available info, generate:
-
-1. A fair local sale price (in USD).
-2. A short SEO-friendly Title (max 65 characters).
-3. 5–10 SEO Keywords (comma-separated).
-4. A friendly 2–4 sentence Description naturally using the keywords.
-
-Respond exactly like:
-
-Price: [number]
-Title: [title]
-Keywords: [comma, separated, keywords]
-Description: [friendly short paragraph]
+Generate:
+- Fair local sale Price
+- Short Title (max 65 characters)
+- 5–10 SEO Keywords
+- 2–4 sentence friendly Description
 `;
 
   try {
