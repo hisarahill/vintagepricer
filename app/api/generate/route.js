@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(req) {
-  const { name, category, materials, condition, dimensions } = await req.json();
+  const { name, materials, condition, dimensions, similarLink } = await req.json();
 
-const prompt = `
-You are helping someone write a Facebook Marketplace listing for a vintage item.
+  const prompt = `
+You are a Facebook marketplace vintage reseller.
 
 Given these item details:
 
@@ -24,44 +24,25 @@ Perform these tasks:
    - Avoid overly salesy or emotional language.
    - Naturally incorporate some of the high-SEO keywords into the description.
 
-Use the provided similar listing link as inspiration if available, but do not copy it directly.
-
 Output exactly these fields labeled: "Price", "Title", "Keywords", "Description".
-No extra commentary.
+Do not include any explanations or extra commentary.
 `;
 
+  const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.VintagePricer}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.5,
+    }),
+  });
 
+  const data = await openaiRes.json();
+  const text = data.choices?.[0]?.message?.content || 'No response generated.';
 
-
-
-
-  try {
-    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.5,
-      }),
-    });
-
-    const data = await openaiRes.json();
-
-    if (!openaiRes.ok) {
-      console.error('OpenAI API error:', data);
-      return NextResponse.json({ result: 'OpenAI API error occurred.' });
-    }
-
-    const text = data.choices?.[0]?.message?.content || 'No response generated.';
-
-    return NextResponse.json({ result: text });
-
-  } catch (error) {
-    console.error('Server error:', error);
-    return NextResponse.json({ result: 'Server error occurred.' });
-  }
+  return NextResponse.json({ result: text });
 }
