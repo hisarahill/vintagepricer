@@ -4,25 +4,26 @@ export async function POST(req) {
   const { name, category, materials, condition, dimensions } = await req.json();
 
 const prompt = `
-You are a vintage resale pricing and marketing expert.
+You are a Facebook Marketplace resale expert.
 
-Given the following item details, perform these tasks:
+Given the following vintage item details:
 
-1. Estimate a fair local sale price in USD based on the item's type, material, condition, and dimensions.
-2. Write a complete Facebook Marketplace listing including:
-   - A descriptive Title
-   - A detailed SEO-optimized Description
-   - A list of relevant Search Keywords (formatted as a comma-separated list)
-
-Here are the item details:
 - Name: ${name}
 - Materials: ${materials}
 - Condition: ${condition}
 - Dimensions: ${dimensions}
 
-Use reasonable assumptions if needed, and fill in any missing details naturally.
-Generate a fully completed listing without asking for additional information.
+Perform these tasks:
+
+1. Estimate a fair local sale price in USD. Output only the number (e.g., "35"). No dollar signs, no extra text.
+2. Write a short, catchy Title suitable for Facebook Marketplace (maximum 65 characters).
+3. Generate a short list (5–10 terms) of high-SEO and long-tail keywords relevant to the item.
+4. Write a concise, compelling Description (2–4 sentences) naturally incorporating the keywords, focusing on value and appeal.
+
+Output ONLY the four fields clearly labeled: "Price", "Title", "Keywords", "Description".
+Do not include any extra commentary, headings, or explanations.
 `;
+
 
 
 
