@@ -76,10 +76,7 @@ export default function Home() {
 
 
       {/* Main content */}
-      <main className="flex flex-col items-center justify-center min-h-screen p-6 bg-[#FDF6EC] font-poppins">
-        {/* All your form and results (exactly as you wrote) */}
-        ...
-      </main>
+     <main className="flex flex-col items-center justify-center min-h-screen p-6 pt-40 bg-[#FDF6EC] font-poppins">
     </>
   );
 }
