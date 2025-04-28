@@ -67,7 +67,7 @@ export default function Home() {
       {/* Header Section */}
       <div className="relative w-full h-48 bg-center bg-repeat flex items-center justify-center mb-8"
         style={{
-          backgroundImage: "url('/headerbackground.png')",
+          backgroundImage: "url('/headbackground.png')",
         }}
       >
         {/* Center header */}
