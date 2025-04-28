@@ -38,7 +38,7 @@ export async function POST(req) {
     } catch (error) {
       console.error('Scraping failed:', error);
     }
-  } // closes the if(similarLink) safely
+  } // END of if (similarLink) {} safely!
 
   const prompt = `
 You are helping create a vintage item listing.
