@@ -4,30 +4,30 @@ export async function POST(req) {
   const { name, materials, condition, dimensions, similarLink } = await req.json();
 
 const prompt = `
-You are an expert Facebook Marketplace vintage item seller. 
+You are a Facebook Marketplace listing assistant. Your job is to help vintage resellers create listings.
+
 Given these item details:
 
 - Name: ${name}
 - Materials: ${materials}
 - Condition: ${condition}
 - Dimensions: ${dimensions}
-${similarLink ? `- Reference Listing Link: ${similarLink}` : ''}
+${similarLink ? `- Similar Listing: ${similarLink}` : ''}
 
-Follow these strict instructions:
-1. Estimate a realistic local sale Price in USD. Output only the number. No dollar signs, no explanation.
-2. Write a short, catchy Title for Facebook Marketplace (maximum 65 characters).
-3. List 5-10 high-SEO Keywords (comma-separated, no bullet points).
-4. Write a short Description (2-4 sentences). The description MUST naturally incorporate some of the keywords. Avoid sounding overly salesy.
+Instructions:
+- First, estimate a fair local sale price (numeric only, no symbols).
+- Second, create a short title for the item (max 65 characters).
+- Third, create 5-10 SEO-friendly keywords, comma-separated.
+- Fourth, write a short 2-4 sentence description, using some keywords naturally.
 
-Important:
-- Output the result exactly in this structure:
+**Important Formatting: Output EXACTLY like this, no extra text:**
 
-Price: [price]
-Title: [title]
-Keywords: [keyword1, keyword2, keyword3...]
-Description: [description]
+Price: [only the number]
+Title: [short title]
+Keywords: [keyword1, keyword2, keyword3, ...]
+Description: [short description]
 
-Do not explain anything. Only fill out the sections above.
+Do not add anything extra. Just fill the 4 fields.
 `;
 
 
