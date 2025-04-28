@@ -63,14 +63,24 @@ export default function Home() {
 
   return (
     <>
-      {/* Sticky glowing header */}
-      <header className="w-full flex justify-center bg-[#f9f5f0] shadow-md p-4 mb-8 sticky top-0 z-50 animate-glow">
-        <img
-          src="/header.png"
-          alt="Vintage Reseller Pricing Tool Banner"
-          className="max-h-32 rounded-xl shadow-sm hover:scale-105 transition-transform duration-300 object-contain"
-        />
-      </header>
+      <header className="relative w-full h-48">
+  {/* Background pattern */}
+  <img
+    src="/headbackground.png"
+    alt="Background Pattern"
+    className="absolute inset-0 w-full h-full object-cover"
+  />
+
+  {/* Foreground: bunnies + text */}
+  <div className="relative flex justify-center items-center h-full">
+    <img
+      src="/header.png"
+      alt="Vintage Reseller Pricing Tool Banner"
+      className="max-h-32 object-contain"
+    />
+  </div>
+</header>
+
 
       <main className="flex flex-col items-center justify-center min-h-screen p-6 pt-40 bg-[#FDF6EC] font-poppins">
         <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl">
