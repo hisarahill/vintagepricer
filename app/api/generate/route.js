@@ -32,21 +32,29 @@ export async function POST(req) {
   }
 
   const prompt = `
-You are helping create a vintage item listing.
+You are helping create a Facebook Marketplace listing for a vintage item.
 
-Item details:
+Here are the item details:
 - Name: ${name}
 - Materials: ${materials}
 - Condition: ${condition}
 - Dimensions: ${dimensions}
-${scrapedTitle ? `- Reference Item Title: ${scrapedTitle}` : ''}
-${scrapedPrice ? `- Reference Item Price: $${scrapedPrice}` : ''}
+${scrapedTitle ? `- Reference Item Title from Etsy: ${scrapedTitle}` : ''}
+${scrapedPrice ? `- Reference Item Price on Etsy: $${scrapedPrice}` : ''}
 
 Instructions:
-- Estimate a fair Facebook Marketplace price (USD), considering any reference price.
-- Write a short Title (max 65 characters).
-- List 5–10 SEO keywords (comma-separated).
-- Write a 2–4 sentence Description naturally using keywords.
+1. Estimate a fair local sale price (USD) for Facebook Marketplace. 
+   - Consider the item's condition and the typical price difference between local resale and online marketplaces like Etsy (local is often 20–40% lower).
+   - Reference the Etsy price if available, but adjust accordingly for condition and local demand.
+   - Output only the number (e.g., "35"). No dollar signs or extra words.
+
+2. Write a short Title (max 65 characters) suitable for a Facebook listing.
+
+3. List 5–10 SEO keywords (comma-separated) that describe this item and how buyers might search for it.
+
+4. Write a short, friendly Description (2–4 sentences max) using a few keywords naturally. 
+   - Avoid flowery language and sales hype.
+   - Focus on what it is, its appeal, and who might like it.
 
 Output format:
 Price: [number]
@@ -54,6 +62,7 @@ Title: [text]
 Keywords: [comma-separated keywords]
 Description: [text]
 `;
+
 
   try {
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
