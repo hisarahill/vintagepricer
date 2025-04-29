@@ -31,6 +31,7 @@ export default function Home() {
     });
 
     const data = await response.json();
+    console.log('Backend response:', data.result); // Debug logging
 
     const sections = {
       Price: '',
@@ -43,13 +44,13 @@ export default function Home() {
       if (line.startsWith('Price:')) sections.Price = line.replace('Price:', '').trim();
       else if (line.startsWith('Title:')) sections.Title = line.replace('Title:', '').trim();
       else if (line.startsWith('Keywords:')) sections.Keywords = line.replace('Keywords:', '').trim();
-      else if (line.startsWith('Description:')) sections.Description = line.replace('Description:', '').trim();
+      else if (line.startsWith('Description:')) sections.Description += line.replace('Description:', '').trim() + '\n';
     });
 
     setPrice(sections.Price);
     setTitle(sections.Title);
     setKeywords(sections.Keywords);
-    setDescription(sections.Description);
+    setDescription(sections.Description.trim());
     setLoading(false);
   };
 
@@ -73,23 +74,23 @@ export default function Home() {
           <img src="/header.png" alt="Vintage Reseller Pricing Tool" className="h-32 object-contain" />
         </div>
         <img
-  src="/bunnyleft.png"
-  alt="Left Bunny"
-  className="absolute left-0 top-1/2 transform -translate-y-1/2 h-28 md:h-40 w-auto"
-/>
-
-<img
-  src="/bunnyright.png"
-  alt="Right Bunny"
-  className="absolute right-0 top-1/2 transform -translate-y-1/2 h-28 md:h-40 w-auto"
-/>
-
-
+          src="/bunnyleft.png"
+          alt="Left Bunny"
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 h-28 md:h-40 w-auto"
+        />
+        <img
+          src="/bunnyright.png"
+          alt="Right Bunny"
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 h-28 md:h-40 w-auto"
+        />
       </div>
 
       {/* Form */}
       <main className="flex flex-col items-center justify-center p-6">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full max-w-2xl bg-white p-8 rounded-xl shadow-md">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-5 w-full max-w-2xl bg-white p-8 rounded-xl shadow-md"
+        >
           <input
             name="name"
             placeholder="Item Name"
@@ -121,7 +122,7 @@ export default function Home() {
           />
           <input
             name="similarLink"
-            placeholder="Etsy Link"
+            placeholder="Etsy Link (Optional)"
             value={formData.similarLink}
             onChange={handleChange}
             className="border border-gray-300 rounded-md p-3 bg-[#f9f5f0] focus:outline-none focus:ring-2 focus:ring-[#D87D4A]"
@@ -137,7 +138,37 @@ export default function Home() {
         {/* Results */}
         {(price || title || keywords || description) && (
           <div className="flex flex-col w-full max-w-2xl bg-white p-8 rounded-xl shadow-lg gap-6 mt-8">
-            {/* Same results section as before */}
+            <div>
+              <strong>Price:</strong> ${price}
+            </div>
+            <div>
+              <strong>Title:</strong> {title}
+              <button
+                onClick={() => handleCopy(title)}
+                className="ml-2 text-sm text-blue-500 underline"
+              >
+                Copy
+              </button>
+            </div>
+            <div>
+              <strong>Keywords:</strong> {keywords}
+              <button
+                onClick={() => handleCopy(keywords)}
+                className="ml-2 text-sm text-blue-500 underline"
+              >
+                Copy
+              </button>
+            </div>
+            <div>
+              <strong>Description:</strong>
+              <p className="mt-1 whitespace-pre-wrap">{description}</p>
+              <button
+                onClick={() => handleCopy(description)}
+                className="mt-2 text-sm text-blue-500 underline"
+              >
+                Copy
+              </button>
+            </div>
           </div>
         )}
       </main>
