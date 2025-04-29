@@ -81,7 +81,9 @@ Description: [text]
     });
 
     const data = await openaiRes.json();
-    console.log('OpenAI raw response:', data);
+console.log('OpenAI raw response:', JSON.stringify(data, null, 2));
+console.log('OpenAI generated result:', data.choices?.[0]?.message?.content);
+
 
     const message = data.choices?.[0]?.message?.content;
     if (!message) {
