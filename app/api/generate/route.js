@@ -13,7 +13,9 @@ export async function POST(req) {
     try {
       console.log('Trying to scrape:', similarLink);
 
-      const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`);
+      const scraperRes = await fetch(
+        `https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`
+      );
       const html = await scraperRes.text();
 
       console.log('Scraped HTML length:', html.length);
@@ -35,7 +37,6 @@ export async function POST(req) {
 
       console.log('Scraped Title:', scrapedTitle);
       console.log('Scraped Price:', scrapedPrice);
-
     } catch (error) {
       console.error('Scraping failed:', error);
     }
@@ -63,7 +64,7 @@ Price: [number]
 Title: [text]
 Keywords: [comma-separated keywords]
 Description: [text]
-`.trim();
+`;
 
   try {
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -79,20 +80,18 @@ Description: [text]
       }),
     });
 
-    if (!openaiRes.ok) {
-      const errorText = await openaiRes.text();
-      console.error('OpenAI response not OK:', errorText);
-      return NextResponse.json({ result: 'OpenAI error. Try again later.' });
+    const data = await openaiRes.json();
+    console.log('OpenAI raw response:', data);
+
+    const message = data.choices?.[0]?.message?.content;
+    if (!message) {
+      console.error('Missing message content in OpenAI response:', data);
+      return NextResponse.json({ result: 'Error: No content returned from OpenAI.' });
     }
 
-    const data = await openaiRes.json();
-    console.log('Full OpenAI Response:', JSON.stringify(data, null, 2));
-
-    const text = data.choices?.[0]?.message?.content?.trim() || 'No response generated.';
-    return NextResponse.json({ result: text });
-
+    return NextResponse.json({ result: message });
   } catch (error) {
-    console.error('OpenAI Fetch Error:', error);
-    return NextResponse.json({ result: 'Error contacting OpenAI. Please try again.' });
+    console.error('OpenAI Error:', error);
+    return NextResponse.json({ result: 'Error generating listing. Please try again.' });
   }
 }
