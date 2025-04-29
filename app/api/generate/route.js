@@ -11,14 +11,8 @@ export async function POST(req) {
 
   if (similarLink) {
     try {
-      console.log('Trying to scrape:', similarLink);
-
-      const scraperRes = await fetch(
-        `https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`
-      );
+      const scraperRes = await fetch(`https://app.scrapingbee.com/api/v1/?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(similarLink)}&render_js=true`);
       const html = await scraperRes.text();
-
-      console.log('Scraped HTML length:', html.length);
 
       const titleMatch = html.match(/<meta property="og:title" content="(.*?)"/i) || html.match(/<title>(.*?)<\/title>/i);
       if (titleMatch) {
@@ -28,17 +22,12 @@ export async function POST(req) {
       const priceMatch = html.match(/\$([0-9]+(?:\.[0-9]{1,2})?)/);
       if (priceMatch) {
         scrapedPrice = priceMatch[1];
-      } else {
-        const jsonPriceMatch = html.match(/"price":\s*([0-9]+(?:\.[0-9]{1,2})?)/);
-        if (jsonPriceMatch) {
-          scrapedPrice = jsonPriceMatch[1];
-        }
       }
 
-      console.log('Scraped Title:', scrapedTitle);
-      console.log('Scraped Price:', scrapedPrice);
-    } catch (error) {
-      console.error('Scraping failed:', error);
+      console.log('✅ Scraped Title:', scrapedTitle);
+      console.log('✅ Scraped Price:', scrapedPrice);
+    } catch (err) {
+      console.error('❌ Scraping error:', err);
     }
   }
 
@@ -81,19 +70,13 @@ Description: [text]
     });
 
     const data = await openaiRes.json();
-console.log('OpenAI raw response:', JSON.stringify(data, null, 2));
-console.log('OpenAI generated result:', data.choices?.[0]?.message?.content);
+    const result = data?.choices?.[0]?.message?.content;
 
+    console.log('📦 OpenAI final result:', result); // Key log!
 
-    const message = data.choices?.[0]?.message?.content;
-    if (!message) {
-      console.error('Missing message content in OpenAI response:', data);
-      return NextResponse.json({ result: 'Error: No content returned from OpenAI.' });
-    }
-
-    return NextResponse.json({ result: message });
-  } catch (error) {
-    console.error('OpenAI Error:', error);
-    return NextResponse.json({ result: 'Error generating listing. Please try again.' });
+    return NextResponse.json({ result: result || '' });
+  } catch (err) {
+    console.error('❌ OpenAI error:', err);
+    return NextResponse.json({ result: 'Error generating listing.' });
   }
 }
