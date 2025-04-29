@@ -44,8 +44,8 @@ ${scrapedPrice ? `- Reference Item Price on Etsy: $${scrapedPrice}` : ''}
 
 Instructions:
 1. Estimate a fair local sale price (USD) for Facebook Marketplace. 
-   - Consider the item's condition and the typical price difference between local resale and online marketplaces like Etsy (local is often 20–40% lower).
-   - Reference the Etsy price if available, but adjust accordingly for condition and local demand.
+   - Consider the item's condition and the typical price difference between local resale and online marketplaces like Etsy (local is often 20–30% lower).
+   - Reference the Etsy price if available, but adjust accordingly for condition.
    - Output only the number (e.g., "35"). No dollar signs or extra words.
 
 2. Write a short Title (max 65 characters) suitable for a Facebook listing.
